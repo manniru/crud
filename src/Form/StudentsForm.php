@@ -20,6 +20,21 @@ class StudentsForm extends FormBase {
       '#required' => TRUE,
     ];
 
+    $form['age'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Age'),
+      '#required' => TRUE,
+    ];
+
+    $form['gender'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Gender'),
+      '#options' => [
+        'male' => 'Male',
+        'female' => 'Female',
+      ]
+    ];
+
     $form['actions'] = [
       '#type' => 'actions',
     ];
@@ -37,13 +52,27 @@ class StudentsForm extends FormBase {
     $title = $form_state->getValue('title');
     if (strlen($title) < 5) {
       // Set an error for the form element with a key of "title".
-      $form_state->setErrorByName('title', $this->t('The title must be at least 5 characters long.'));
+      // $form_state->setErrorByName('title', $this->t('The title must be at least 5 characters long.'));
     }
   }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $title = $form_state->getValue('title');
-    $this->messenger()->addMessage($this->t('You specified a title of %title.', ['%title' => $title]));
+    $name = $form_state->getValue('name');
+    $age = $form_state->getValue('age');
+    $gender = $form_state->getValue('gender');
+
+    $fields = [
+      'name' => $name,
+      'age' => $age,
+      'gender' => $gender,
+
+    ];
+
+    $db_id = \Drupal::database()->insert('_students')->fields($fields)->execute();
+
+
+
+    $this->messenger()->addMessage("Name: $name, Age: $age, Gender: $gender, Record ID: $db_id");
   }
 
 }
