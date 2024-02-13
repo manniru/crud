@@ -1,0 +1,7 @@
+crud.students:
+  path: '/students'
+  defaults:
+    _form:  '\Drupal\crud\Form\StudentsForm'
+    _title: 'Student form'
+  requirements:
+    _permission: 'access content'
