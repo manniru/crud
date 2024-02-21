@@ -1,0 +1,11 @@
+crud.student:
+  title: 'Student Form'
+  route_name: crud.student
+  menu_name: main
+  weight: 1
+
+crud.students:
+  title: 'Students List'
+  route_name: crud.students
+  menu_name: main
+  weight: 2
