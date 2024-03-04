@@ -4,6 +4,8 @@ namespace Drupal\crud\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 class StudentListForm extends FormBase {
 
@@ -15,6 +17,7 @@ class StudentListForm extends FormBase {
 
 
     $header = [
+      'id' => 'ID',
       'name' => 'Name',
       'age' => 'Age',
       'gender' => 'Gender'
@@ -48,10 +51,15 @@ class StudentListForm extends FormBase {
 
             // print('<pre>' . print_r($row, TRUE) . '</pre>'); exit();
 
+      $edit = Link::fromTextAndUrl('Edit', new Url('crud.student', ['id' => $row->id], ['attributes' => ['class' => ['button primary']]]));
+
+
       $rows[] = [
+        'id' => $row->id,
         'name' => $row->name,
         'age' => $row->age,
-        'gender' => $row->gender
+        'gender' => $row->gender,
+        'edit' => $edit,
       ];
 
     }
