@@ -15,6 +15,40 @@ class StudentListForm extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
+
+    /*
+    $faker = \Faker\Factory::create();
+
+    $students = [];
+
+    for ($i = 0; $i <= 10000; $i++) {
+      $student = [
+        'name' => $faker->name(),
+        'gender' => $faker->randomElement(['Male', 'Female']),
+        'age' => $faker->numberBetween(18, 30),
+      ];
+
+      $students[] = $student;
+    }
+
+    // Optionally truncate the table if you want to remove all existing data before inserting new records
+    // \Drupal::database()->truncate('_students')->execute();
+
+    foreach ($students as $record) {
+        // Insert each record individually
+        \Drupal::database()->insert('_students')
+            ->fields(['name', 'gender', 'age'])
+            ->values([
+                'name' => $record['name'],
+                'gender' => $record['gender'],
+                'age' => $record['age'],
+            ])
+            ->execute();
+    }
+
+    print('<pre>' . print_r($students, TRUE) . '</pre>'); exit();
+    */
+
     $search = $_SESSION['search'];
 
     $header = [
@@ -104,6 +138,9 @@ class StudentListForm extends FormBase {
       '#rows' => $rows,
     );
 
+    $form['pager'] = ['#type' => 'pager'];
+
+
     $form['actions'] = [
       '#type' => 'actions',
     ];
@@ -113,6 +150,8 @@ class StudentListForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
     ];
+
+        $form['pager'] = ['#type' => 'pager'];
 
     return $form;
   }
