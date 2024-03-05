@@ -15,6 +15,7 @@ class StudentListForm extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
+    $search = $_SESSION['search'];
 
     $header = [
       'id' => 'ID',
@@ -42,6 +43,19 @@ class StudentListForm extends FormBase {
     // $counts = count($cloned_entries);
     // $total = array_sum(array_column($cloned_entries, 'totalAmount'));
 
+    // if ($search) {
+    //   $query->condition('name', '%' . $search . '%', 'LIKE');
+    // }
+
+    if ($search) {
+      $orGroup = $query->orConditionGroup()
+      ->condition('name','%'. $search.'%', 'LIKE')
+      ->condition('age','%'. $search.'%', 'LIKE')
+      ->condition('gender','%'. $search.'%', 'LIKE')
+  ;
+    $query->condition($orGroup);
+    }
+
     $query->orderBy('tb.id', 'ASC');
 
     $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit(20);
@@ -64,6 +78,24 @@ class StudentListForm extends FormBase {
 
     }
 
+
+    $form['f1'] = ['#type' => 'container', '#attributes' => ['class' => ['container-inline'],],];
+
+    $form['f1']['search'] = [
+      '#type' => 'search', '#size' => 20,
+      '#default_value' => $search ?? '',
+      '#placeholder' => $this->t('Search enter keyword'),
+    ];
+
+    // $form['f1']['sortby'] = [
+    //   '#type' => 'select',
+    //   '#options' => $fields,
+    //   '#default_value' => $sortby ?? '',
+    // ];
+
+    $form['f1']['actions'] = ['#type' => 'actions'];
+    $form['f1']['actions']['search'] = ['#type' => 'submit', '#value' => $this->t('Search')];
+    $form['f1']['actions']['reset'] = ['#type' => 'submit', '#value' => $this->t('Reset')];
 
     $form['table'] = array(
       '#type' => 'table',
@@ -94,22 +126,37 @@ class StudentListForm extends FormBase {
   }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $op = $form_state->getValue('op');
     $name = $form_state->getValue('name');
     $age = $form_state->getValue('age');
     $gender = $form_state->getValue('gender');
 
-    $fields = [
-      'name' => $name,
-      'age' => $age,
-      'gender' => $gender,
 
-    ];
+    if ($op == 'Submit') {
+      $fields = [
+        'name' => $name,
+        'age' => $age,
+        'gender' => $gender,
 
-    $db_id = \Drupal::database()->insert('_students')->fields($fields)->execute();
+      ];
+
+      $db_id = \Drupal::database()->insert('_students')->fields($fields)->execute();
 
 
 
-    $this->messenger()->addMessage("Name: $name, Age: $age, Gender: $gender, Record ID: $db_id");
+      $this->messenger()->addMessage("Name: $name, Age: $age, Gender: $gender, Record ID: $db_id");
+    }
+
+    if ($op == 'Search') {
+      $search = $form_state->getValue('search');
+      $_SESSION['search'] = $search;
+    }
+
+   if ($op == 'Reset') {
+    unset($_SESSION['search']);
+   }
+
+
   }
 
 }
