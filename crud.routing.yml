@@ -29,3 +29,11 @@ crud.excel1:
     _title: 'excel1'
   requirements:
     _permission: 'access content'
+
+crud.pdf2:
+  path: '/pdf2'
+  defaults:
+    _controller: '\Drupal\crud\Controller\DefaultController::pdf2'
+    _title: 'pdf2'
+  requirements:
+    _permission: 'access content'

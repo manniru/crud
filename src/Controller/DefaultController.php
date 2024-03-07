@@ -42,6 +42,43 @@ class DefaultController extends ControllerBase {
   }
 
 
+  public function pdf2() {
+    $students = \Drupal::database()->query("SELECT * FROM _students")->fetchAll();
+
+    $pdf = new \FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial','B',16);
+    $pdf->Cell(0,10,'BAYERO UNIVERSITY KANO', 0, 1, 'C');
+    $pdf->Ln(10); // Add a line break
+
+    // Set header for the student records
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(40, 10, 'ID', 1);
+    $pdf->Cell(40, 10, 'Name', 1);
+    $pdf->Cell(40, 10, 'Email', 1);
+    $pdf->Cell(30, 10, 'Gender', 1);
+    $pdf->Cell(20, 10, 'Age', 1);
+    $pdf->Ln();
+
+    // Reset font for the data rows
+    $pdf->SetFont('Arial', '', 12);
+
+    // Loop through each student and add a row to the PDF
+    foreach ($students as $student) {
+        $pdf->Cell(40, 10, $student->id, 1);
+        $pdf->Cell(40, 10, $student->name, 1);
+        $pdf->Cell(40, 10, $student->email, 1);
+        $pdf->Cell(30, 10, $student->gender, 1);
+        $pdf->Cell(20, 10, $student->age, 1);
+        $pdf->Ln(); // Move to the next line
+    }
+
+    // Output the PDF to the browser for download
+    $pdf->Output('D', 'StudentsList.pdf');
+    exit();
+  }
+
+
 
 
 
