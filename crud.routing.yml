@@ -13,3 +13,19 @@ crud.students:
     _title: 'Student List'
   requirements:
     _permission: 'access content'
+
+crud.pdf1:
+  path: '/pdf1'
+  defaults:
+    _controller: '\Drupal\crud\Controller\DefaultController::pdf1'
+    _title: 'pdf1'
+  requirements:
+    _permission: 'access content'
+
+crud.excel1:
+  path: '/excel1'
+  defaults:
+    _controller: '\Drupal\crud\Controller\DefaultController::excel1'
+    _title: 'excel1'
+  requirements:
+    _permission: 'access content'

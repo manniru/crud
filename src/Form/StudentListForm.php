@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class StudentListForm extends FormBase {
 
@@ -130,6 +131,8 @@ class StudentListForm extends FormBase {
     $form['f1']['actions'] = ['#type' => 'actions'];
     $form['f1']['actions']['search'] = ['#type' => 'submit', '#value' => $this->t('Search')];
     $form['f1']['actions']['reset'] = ['#type' => 'submit', '#value' => $this->t('Reset')];
+    $form['f1']['actions']['pdf'] = ['#type' => 'submit', '#value' => $this->t('Download PDF')];
+    $form['f1']['actions']['excel'] = ['#type' => 'submit', '#value' => $this->t('Download Excel')];
 
     $form['table'] = array(
       '#type' => 'table',
@@ -189,6 +192,16 @@ class StudentListForm extends FormBase {
     if ($op == 'Search') {
       $search = $form_state->getValue('search');
       $_SESSION['search'] = $search;
+    }
+
+    if ($op == 'Download PDF') {
+      // Redirect to the PDF download path
+      $form_state->setRedirect('crud.pdf1');
+    }
+
+  if ($op == 'Download Excel') {
+      // Redirect to the Excel download path
+      $form_state->setRedirect('crud.excel1');
     }
 
    if ($op == 'Reset') {
