@@ -4,6 +4,7 @@ namespace Drupal\crud\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
 
 class StudentsForm extends FormBase {
 
@@ -48,6 +49,19 @@ class StudentsForm extends FormBase {
       ]
     ];
 
+    $form['photo'] = [
+      '#type' => 'managed_file',
+      '#title' => t('Upload your passport photo'),
+      '#description' => t('JPG, PNG, JPEG files only'),
+      // '#default_value' => $application->photo ? [$application->photo] : NULL,
+      '#upload_validators' => [
+        'file_validate_extensions' => ['jpg', 'jpeg', 'png'],
+        'file_validate_size' => [1024 * 1024], // 1MB
+      ],
+      '#upload_location' => 'public://photos/',
+      '#required' => TRUE,
+    ];
+
     $form['actions'] = [
       '#type' => 'actions',
     ];
@@ -89,12 +103,25 @@ class StudentsForm extends FormBase {
     $gender = $form_state->getValue('gender');
     $table_id = $form_state->getValue('table_id');
 
+
+    // handle photo
+    $photo_fid = $form_state->getValue(['photo', 0]);
+    if (!empty($photo_fid)) {
+      $values['photo'] = $photo_fid;
+      $file = File::load($photo_fid);
+      $file->setPermanent();
+      $file->save();
+    }
+    else {
+      unset($values['photo']);
+    }
+
     if ($op == 'Submit') {
       $fields = [
         'name' => $name,
         'age' => $age,
         'gender' => $gender,
-
+        'photo' => $values['photo'],
       ];
 
       $db_id = \Drupal::database()->insert('_students')->fields($fields)->execute();
